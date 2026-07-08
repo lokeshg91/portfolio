@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..700&family=Hanken+Grotesk:wght@400..700&family=Bricolage+Grotesque:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#101418; --sidebar:#0C1014; --panel:#13181D; --card:#181F26;
+  --border:rgba(255,255,255,.08); --text:#E9EDF1; --muted:#93A0AC;
+  --accent:#14A085; --accent-text:#5ED0B8; --accent-soft:rgba(20,160,133,.15);
+  --hover:rgba(255,255,255,.05);
+  --sb-text:#E9EDF1; --sb-muted:#93A0AC; --sb-border:rgba(255,255,255,.08); --sb-hover:rgba(255,255,255,.06);
+  --rail:#080B0E; --sb-active:rgba(255,255,255,.09);
+  --font:"Schibsted Grotesk";
+  --fs:15px; --fs-sm:12.5px; --msg-pad:10px;
+}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font),system-ui,sans-serif;font-size:var(--fs);-webkit-font-smoothing:antialiased}
+a{color:var(--accent-text);text-decoration:none}
+a:hover{color:var(--accent-text);text-decoration:underline}
+input::placeholder{color:var(--muted)}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-thumb{background:rgba(148,160,172,.35);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-track{background:transparent}
+@keyframes lg-blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@keyframes lg-pulse{0%,100%{box-shadow:0 0 0 0 rgba(46,204,113,.45)}70%{box-shadow:0 0 0 6px rgba(46,204,113,0)}}
+@keyframes lg-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;overflow:hidden;background:var(--bg)">
+
+  <!-- ══════════ ICON RAIL ══════════ -->
+  <div style="width:72px;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0 16px;background:var(--rail);color:var(--sb-text)">
+    <div style="width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;margin-bottom:10px">LG</div>
+    <div style="{{ railHomeStyle }}" style-hover="color:var(--sb-text)" onClick="{{ goHome }}">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg>
+      <span style="font-size:10px;font-weight:600">Home</span>
+    </div>
+    <div style="{{ railDmStyle }}" style-hover="color:var(--sb-text)" onClick="{{ goDm }}">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"></path></svg>
+      <span style="font-size:10px;font-weight:600">DMs</span>
+    </div>
+    <div style="{{ railWorkStyle }}" style-hover="color:var(--sb-text)" onClick="{{ goWork }}">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      <span style="font-size:10px;font-weight:600">Work</span>
+    </div>
+    <div style="flex:1"></div>
+    <div title="Toggle sidebar" onClick="{{ toggleSb }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;cursor:pointer;color:var(--sb-muted)" style-hover="color:var(--sb-text);background:var(--sb-hover)">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="16" rx="3"></rect><path d="M9.5 4v16"></path></svg>
+    </div>
+  </div>
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <div style="{{ sidebarStyle }}">
+
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 16px 14px;border-bottom:1px solid var(--sb-border)">
+      <img src="assets/lokesh.jpg" alt="Lokesh Gurjar" style="width:42px;height:42px;border-radius:12px;object-fit:cover;flex:none">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Lokesh Gurjar</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+          <span style="width:7px;height:7px;border-radius:50%;background:#2ECC71;flex:none"></span>
+          <span style="font-size:11.5px;color:var(--sb-muted)">Product Designer · Online</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:8px 10px 12px">
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--sb-muted);padding:14px 10px 6px">Live sites</div>
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <a href="https://sarv.com" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#7C5CFF;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">S</span>
+          <span>Sarv</span>
+        </a>
+        <a href="https://sarv.com/deepcall" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#2563EB;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none">DC</span>
+          <span>DeepCall</span>
+        </a>
+        <a href="https://deepenrich.com" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#0EA271;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none">DE</span>
+          <span>DeepEnrich</span>
+        </a>
+        <a href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#E5484D;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">N</span>
+          <span>Naam</span>
+        </a>
+        <a href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#F59E0B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">W</span>
+          <span>Sarv Workspace</span>
+        </a>
+        <a href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#1E3A5F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none">CD</span>
+          <span>Cyber Dost</span>
+        </a>
+        <a href="#" onClick="{{ goDm }}" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-muted);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:var(--sb-active);color:var(--sb-text);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;flex:none">+</span>
+          <span>Your project</span>
+        </a>
+      </div>
+
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--sb-muted);padding:18px 10px 6px">Channels</div>
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <sc-for list="{{ channels }}" as="ch" hint-placeholder-count="5">
+          <div style="{{ ch.style }}" style-hover="background:var(--sb-hover)" onClick="{{ ch.go }}">
+            <span style="font-family:ui-monospace,Menlo,monospace;opacity:.65;font-size:14px">#</span>
+            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ch.label }}</span>
+            <sc-if value="{{ ch.badge }}" hint-placeholder-val="{{ false }}">
+              <span style="min-width:18px;height:18px;border-radius:999px;background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;flex:none">{{ ch.badge }}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--sb-muted);padding:18px 10px 6px">Direct messages</div>
+      <div style="{{ dmStyle }}" style-hover="background:var(--sb-hover)" onClick="{{ goDm }}">
+        <span style="position:relative;flex:none;display:flex">
+          <img src="assets/lokesh.jpg" alt="" style="width:22px;height:22px;border-radius:7px;object-fit:cover">
+          <span style="position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:50%;background:#2ECC71;border:2px solid var(--sidebar)"></span>
+        </span>
+        <span style="flex:1">Lokesh Gurjar</span>
+        <sc-if value="{{ dmBadge }}" hint-placeholder-val="{{ false }}">
+          <span style="min-width:18px;height:18px;border-radius:999px;background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;flex:none">{{ dmBadge }}</span>
+        </sc-if>
+      </div>
+
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--sb-muted);padding:18px 10px 6px">Apps</div>
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#0A66C2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:none;letter-spacing:-0.02em">in</span>
+          <span>LinkedIn</span>
+        </a>
+        <a href="mailto:lokeshg91@gmail.com" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:none">
+            <svg width="15" height="12" viewBox="0 0 24 18">
+              <path d="M1.5 18h3.6V8.7L0 4.9v11.6C0 17.3.7 18 1.5 18z" fill="#4285F4"></path>
+              <path d="M18.9 18h3.6c.8 0 1.5-.7 1.5-1.5V4.9l-5.1 3.8z" fill="#34A853"></path>
+              <path d="M18.9 2.1v6.6L24 4.9V3c0-1.9-2.2-3-3.7-1.8z" fill="#FBBC04"></path>
+              <path d="M5.1 8.7V2.1L12 7.3l6.9-5.2v6.6L12 13.9z" fill="#EA4335"></path>
+              <path d="M0 3v1.9l5.1 3.8V2.1L3.7 1.2C2.2 0 0 1.1 0 3z" fill="#C5221F"></path>
+            </svg>
+          </span>
+          <span>Gmail</span>
+        </a>
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;color:var(--sb-text);font-size:14px;text-decoration:none" style-hover="background:var(--sb-hover);text-decoration:none">
+          <span style="width:26px;height:26px;border-radius:8px;background:#E5484D;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex:none">CV</span>
+          <span>Resume</span>
+        </a>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--sb-border)">
+      <img src="assets/lokesh.jpg" alt="" style="width:30px;height:30px;border-radius:9px;object-fit:cover;flex:none">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600">Lokesh Gurjar</div>
+        <div style="font-size:11px;color:var(--sb-muted)">Jaipur, India · IST</div>
+      </div>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.04em;color:#2ECC71;border:1px solid rgba(46,204,113,.4);background:rgba(46,204,113,.1);border-radius:999px;padding:3px 8px;flex:none">OPEN TO WORK</span>
+    </div>
+  </div>
+
+  <sc-if value="{{ showBackdrop }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleSb }}" style="position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45)"></div>
+  </sc-if>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);border-left:1px solid var(--border)">
+
+    <div style="height:56px;flex:none;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid var(--border)">
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleSb }}" title="Menu" style="width:34px;height:34px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;padding:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+        </button>
+      </sc-if>
+      <span style="font-family:ui-monospace,Menlo,monospace;color:var(--muted);font-size:16px">{{ headerPrefix }}</span>
+      <span style="font-weight:700;font-size:16px;letter-spacing:-0.01em">{{ headerTitle }}</span>
+      <span style="width:1px;height:18px;background:var(--border);margin:0 4px"></span>
+      <span style="font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">{{ headerTopic }}</span>
+      <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size:11px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;flex:none">designed &amp; prototyped by Lokesh</span>
+      </sc-if>
+    </div>
+
+    <div ref="{{ feedRef }}" style="flex:1;overflow-y:auto;padding:14px 0 24px">
+
+      <div style="display:flex;align-items:center;gap:12px;padding:4px 22px 14px">
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+        <span style="font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:3px 11px;background:var(--card)">Today</span>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+
+      <!-- ─────── #introductions ─────── -->
+      <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="#introductions">
+        <div style="padding:4px 22px 16px">
+          <div style="font-size:22px;font-weight:700;letter-spacing:-0.01em"># introductions</div>
+          <div style="color:var(--muted);font-size:12.5px;margin-top:3px">This is the start of the channel. Who I am, in a few messages.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">9:41 AM</span></div>
+            <p style="margin:0;font-size:19px;font-weight:650;line-height:1.4;max-width:780px;letter-spacing:-0.01em">Designing products that people actually enjoy using.</p>
+            <p style="margin:0;line-height:1.55;max-width:780px">Hey, I'm Lokesh 👋 A Product Designer with 5+ years of experience across SaaS platforms, enterprise dashboards, internal tools, and AI products. I turn complex workflows into simple, intuitive experiences.</p>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="in-wave" data-base="24" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>👋</span><span class="rx-c">24</span></button>
+              <button class="rx" data-rid="in-fire" data-base="13" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>🔥</span><span class="rx-c">13</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">9:44 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">A bit of background — I started in graphic design, fell in love with how products work beyond visuals, and moved into product design. These days I focus on scalable SaaS, enterprise dashboards, admin panels, and design systems.</p>
+            <p style="margin:0;line-height:1.55;max-width:780px">From early research and wireframes to polished UI and developer handoff, I like owning the whole process.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;max-width:720px;margin-top:4px">
+              <div style="padding:12px 12px 10px;border:1px solid var(--border);border-radius:10px;background:var(--card)"><div style="font-size:21px;font-weight:700;color:var(--accent-text)">5+</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Years experience</div></div>
+              <div style="padding:12px 12px 10px;border:1px solid var(--border);border-radius:10px;background:var(--card)"><div style="font-size:21px;font-weight:700;color:var(--accent-text)">30+</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Projects delivered</div></div>
+              <div style="padding:12px 12px 10px;border:1px solid var(--border);border-radius:10px;background:var(--card)"><div style="font-size:21px;font-weight:700;color:var(--accent-text)">15+</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Products designed</div></div>
+              <div style="padding:12px 12px 10px;border:1px solid var(--border);border-radius:10px;background:var(--card)"><div style="font-size:21px;font-weight:700;color:var(--accent-text)">100+</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Screens shipped</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">9:52 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">Right now I design at <strong>Sarv</strong> — cloud communication &amp; AI products used by 50,000+ businesses and government agencies. The tour of what I've shipped is in <a href="#" onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--accent-soft);color:var(--accent-text);padding:2px 8px;border-radius:7px;text-decoration:none" style-hover="text-decoration:none;filter:brightness(1.08)">#work</a>.</p>
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px;border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:14px 18px;max-width:720px;margin-top:4px">
+              <span style="width:10px;height:10px;border-radius:50%;background:#2ECC71;animation:lg-pulse 2s infinite;flex:none"></span>
+              <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">Open to full-time Product Design opportunities</div><div style="font-size:12px;color:var(--muted);margin-top:1px">Jaipur, India · Remote friendly</div></div>
+              <button onClick="{{ goDm }}" style="border:none;background:var(--accent);color:#fff;font-family:inherit;font-weight:600;font-size:13px;padding:8px 14px;border-radius:9px;cursor:pointer;flex:none">Say hello →</button>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="in-rocket" data-base="9" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>🚀</span><span class="rx-c">9</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">9:56 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">👀 Some recent favourites below.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px 16px;max-width:1100px;margin-top:4px">
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" style-hover="color:var(--accent-text)">deepcall_dashboard.png</div>
+                <div style="width:100%;aspect-ratio:16/10;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="teaser-deepcall" shape="rect" placeholder="Drop image" hint-size="100%,140px" style="width:100%;height:100%;display:block"></x-import>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" style-hover="color:var(--accent-text)">cai_flow-builder.png</div>
+                <div style="width:100%;aspect-ratio:16/10;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="teaser-cai" shape="rect" placeholder="Drop image" hint-size="100%,140px" style="width:100%;height:100%;display:block"></x-import>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" style-hover="color:var(--accent-text)">deepenrich_search.png</div>
+                <div style="width:100%;aspect-ratio:16/10;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="teaser-deepenrich" shape="rect" placeholder="Drop image" hint-size="100%,140px" style="width:100%;height:100%;display:block"></x-import>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" style-hover="color:var(--accent-text)">naam_mobile-app.png</div>
+                <div style="width:100%;aspect-ratio:16/10;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="teaser-naam" shape="rect" placeholder="Drop image" hint-size="100%,140px" style="width:100%;height:100%;display:block"></x-import>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" style-hover="color:var(--accent-text)">workspace_mail.png</div>
+                <div style="width:100%;aspect-ratio:16/10;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="teaser-workspace" shape="rect" placeholder="Drop image" hint-size="100%,140px" style="width:100%;height:100%;display:block"></x-import>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" style-hover="color:var(--accent-text)">cyberdost_learning.png</div>
+                <div style="width:100%;aspect-ratio:16/10;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="teaser-cyberdost" shape="rect" placeholder="Drop image" hint-size="100%,140px" style="width:100%;height:100%;display:block"></x-import>
+                </div>
+              </div>
+            </div>
+            <p style="margin:2px 0 0;line-height:1.5;max-width:780px;font-size:13px;color:var(--muted)">Full breakdowns in <a href="#" onClick="{{ goWork }}" style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--accent-soft);color:var(--accent-text);padding:2px 8px;border-radius:7px;text-decoration:none" style-hover="text-decoration:none;filter:brightness(1.08)">#work</a></p>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ─────── #work ─────── -->
+      <sc-if value="{{ showWork }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="#work">
+        <div style="padding:4px 22px 16px">
+          <div style="font-size:22px;font-weight:700;letter-spacing:-0.01em"># work</div>
+          <div style="color:var(--muted);font-size:12.5px;margin-top:3px">Seven products, designed end-to-end — research, flows, UI, design systems, handoff.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:02 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">Some recent favourites below 👇</p>
+            <p style="margin:0;line-height:1.5;max-width:780px;font-size:12.5px;color:var(--muted)">Screenshots coming soon — drag an image onto any placeholder to fill it.</p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:04 AM</span></div>
+            <div style="max-width:800px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <div style="width:100%;aspect-ratio:16/9;background:var(--hover)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-cyberdost" shape="rect" placeholder="Drop a Cyber Dost screenshot" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:650;font-size:16px">Cyber Dost</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:3px 9px">Government of India</span>
+                </div>
+                <p style="margin:0;line-height:1.5;color:var(--muted);font-size:13.5px">Cybersecurity awareness platform that educates citizens through interactive learning, reporting, and engagement.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">UX Research</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Wireframes</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">UI Design</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Prototype</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Dev Handoff</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="wk-cd" data-base="14" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>👏</span><span class="rx-c">14</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:06 AM</span></div>
+            <div style="max-width:800px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <div style="width:100%;aspect-ratio:16/9;background:var(--hover)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-workspace" shape="rect" placeholder="Drop a Sarv Workspace screenshot" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:650;font-size:16px">Sarv Workspace</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:3px 9px">Sarv · Enterprise</span>
+                </div>
+                <p style="margin:0;line-height:1.5;color:var(--muted);font-size:13.5px">Business communication suite — secure email, docs, storage, and collaboration tools serving 500,000+ users.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Email</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Collaboration</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Design System</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:08 AM</span></div>
+            <div style="max-width:800px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <div style="width:100%;aspect-ratio:16/9;background:var(--hover)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-naam" shape="rect" placeholder="Drop a Naam screenshot" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:650;font-size:16px">Naam</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:3px 9px">Sarv · Mobile</span>
+                </div>
+                <p style="margin:0;line-height:1.5;color:var(--muted);font-size:13.5px">Caller-identification and cybercrime-prevention app that flags fraudulent numbers and malicious websites — privacy-first, no contact upload required.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Mobile App</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Trust &amp; Safety</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Onboarding</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:10 AM</span></div>
+            <div style="max-width:800px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <div style="width:100%;aspect-ratio:16/9;background:var(--hover)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-deepcall" shape="rect" placeholder="Drop a DeepCall screenshot" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:650;font-size:16px">DeepCall</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:3px 9px">Sarv · Cloud Telephony</span>
+                </div>
+                <p style="margin:0;line-height:1.5;color:var(--muted);font-size:13.5px">AI-powered cloud contact center — IVR, smart routing, agent dashboards, and call analytics. Also powers a state-wide emergency-response system handling millions of calls a day.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Dashboards</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Call Analytics</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">IVR Flows</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Design System</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="wk-dc" data-base="18" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>🔥</span><span class="rx-c">18</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:12 AM</span></div>
+            <div style="max-width:800px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <div style="width:100%;aspect-ratio:16/9;background:var(--hover)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-deepenrich" shape="rect" placeholder="Drop a DeepEnrich screenshot" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:650;font-size:16px">DeepEnrich</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:3px 9px">Sarv · SaaS</span>
+                </div>
+                <p style="margin:0;line-height:1.5;color:var(--muted);font-size:13.5px">B2B lead-intelligence platform for discovering, enriching, and engaging verified contacts — advanced search, bulk enrichment, campaigns, and a Chrome extension.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Data Tables</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Search &amp; Filters</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Chrome Extension</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="wk-de" data-base="11" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>👏</span><span class="rx-c">11</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:14 AM</span></div>
+            <div style="max-width:800px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <div style="width:100%;aspect-ratio:16/9;background:var(--hover)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-sarv" shape="rect" placeholder="Drop a Sarv screenshot" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:650;font-size:16px">Sarv</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:3px 9px">Sarv · Web</span>
+                </div>
+                <p style="margin:0;line-height:1.5;color:var(--muted);font-size:13.5px">The platform's marketing site and product pages — information architecture, messaging, and conversion-focused landing pages.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Web Design</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">IA</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Landing Pages</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:16 AM</span></div>
+            <div style="max-width:800px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <div style="width:100%;aspect-ratio:16/9;background:var(--hover)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-cai" shape="rect" placeholder="Drop a Sarv CAI screenshot" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:650;font-size:16px">Sarv CAI</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:3px 9px">Sarv · Conversational AI</span>
+                </div>
+                <p style="margin:0;line-height:1.5;color:var(--muted);font-size:13.5px">Conversational-AI suite — voice agents, speech-to-text, and TTS — designed so non-technical teams can build, test, and monitor AI call flows.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">AI Product Design</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Flow Builder</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 7px">Prototyping</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="wk-cai" data-base="15" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>🔥</span><span class="rx-c">15</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ─────── #skills-and-tools ─────── -->
+      <sc-if value="{{ showSkills }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="#skills-and-tools">
+        <div style="padding:4px 22px 16px">
+          <div style="font-size:22px;font-weight:700;letter-spacing:-0.01em"># skills-and-tools</div>
+          <div style="color:var(--muted);font-size:12.5px;margin-top:3px">What I work with, and what I'm learning next.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:31 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">The full stack of my design practice 👇</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;max-width:780px">
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">UX Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">UI Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Interaction Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Wireframing</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Information Architecture</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">User Flows</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Journey Mapping</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Rapid Prototyping</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Design Systems</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Accessibility</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Responsive Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Mobile Apps</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Dashboard Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Enterprise SaaS</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">AI Product Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Developer Handoff</span>
+              <span style="padding:5px 11px;border:1px solid var(--border);border-radius:999px;font-size:13px;background:var(--card)">Design QA</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:33 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">Daily drivers:</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;max-width:780px">
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">Figma</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">FigJam</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">Photoshop</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">Illustrator</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">Adobe XD</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">React</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">Tailwind CSS</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">HTML / CSS</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">Framer Motion</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--card)">Git</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">10:36 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">Currently leveling up:</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;max-width:780px">
+              <span style="padding:5px 11px;border:1px solid var(--accent);border-radius:999px;font-size:13px;background:var(--accent-soft);color:var(--accent-text);font-weight:600">AI Product Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--accent);border-radius:999px;font-size:13px;background:var(--accent-soft);color:var(--accent-text);font-weight:600">Design Engineering</span>
+              <span style="padding:5px 11px;border:1px solid var(--accent);border-radius:999px;font-size:13px;background:var(--accent-soft);color:var(--accent-text);font-weight:600">Motion Design</span>
+              <span style="padding:5px 11px;border:1px solid var(--accent);border-radius:999px;font-size:13px;background:var(--accent-soft);color:var(--accent-text);font-weight:600">React UI Development</span>
+              <span style="padding:5px 11px;border:1px solid var(--accent);border-radius:999px;font-size:13px;background:var(--accent-soft);color:var(--accent-text);font-weight:600">Advanced Design Systems</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="sk-zap" data-base="7" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>⚡</span><span class="rx-c">7</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ─────── #design-process ─────── -->
+      <sc-if value="{{ showProcess }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="#design-process">
+        <div style="padding:4px 22px 16px">
+          <div style="font-size:22px;font-weight:700;letter-spacing:-0.01em"># design-process</div>
+          <div style="color:var(--muted);font-size:12.5px;margin-top:3px">How a project goes from brief to shipped.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">11:05 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">Every project is different, but the shape is usually the same:</p>
+            <div style="display:flex;flex-direction:column;gap:10px;max-width:720px;margin-top:2px">
+              <div style="display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:13px 15px">
+                <span style="width:28px;height:28px;border-radius:9px;background:var(--accent-soft);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:13px;flex:none">1</span>
+                <div style="min-width:0"><div style="font-weight:650;font-size:14.5px">Discover</div><div style="color:var(--muted);font-size:13px;line-height:1.5;margin-top:2px">Understand business goals, users, competitors, and project requirements.</div></div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:13px 15px">
+                <span style="width:28px;height:28px;border-radius:9px;background:var(--accent-soft);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:13px;flex:none">2</span>
+                <div style="min-width:0"><div style="font-weight:650;font-size:14.5px">Define</div><div style="color:var(--muted);font-size:13px;line-height:1.5;margin-top:2px">Map user journeys, information architecture, and product strategy.</div></div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:13px 15px">
+                <span style="width:28px;height:28px;border-radius:9px;background:var(--accent-soft);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:13px;flex:none">3</span>
+                <div style="min-width:0"><div style="font-weight:650;font-size:14.5px">Design</div><div style="color:var(--muted);font-size:13px;line-height:1.5;margin-top:2px">Create wireframes, high-fidelity interfaces, components, and design systems.</div></div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:13px 15px">
+                <span style="width:28px;height:28px;border-radius:9px;background:var(--accent-soft);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:13px;flex:none">4</span>
+                <div style="min-width:0"><div style="font-weight:650;font-size:14.5px">Prototype</div><div style="color:var(--muted);font-size:13px;line-height:1.5;margin-top:2px">Build interactive prototypes for validation with users and stakeholders.</div></div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:13px 15px">
+                <span style="width:28px;height:28px;border-radius:9px;background:var(--accent-soft);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:13px;flex:none">5</span>
+                <div style="min-width:0"><div style="font-weight:650;font-size:14.5px">Deliver</div><div style="color:var(--muted);font-size:13px;line-height:1.5;margin-top:2px">Developer-ready specs, assets, documentation, and implementation support.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">11:09 AM</span></div>
+            <div style="border:1px solid var(--border);border-radius:14px;background:var(--card);padding:20px 22px;max-width:720px">
+              <div style="font-size:17px;font-weight:650;letter-spacing:-0.01em">"Good design removes friction."</div>
+              <div style="color:var(--muted);font-size:13.5px;line-height:1.6;margin-top:8px">Every interface should answer three questions — can users understand it, can they trust it, and can they accomplish their goal quickly?</div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="pr-100" data-base="8" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>💯</span><span class="rx-c">8</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ─────── #fun-facts ─────── -->
+      <sc-if value="{{ showFun }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="#fun-facts">
+        <div style="padding:4px 22px 16px">
+          <div style="font-size:22px;font-weight:700;letter-spacing:-0.01em"># fun-facts</div>
+          <div style="color:var(--muted);font-size:12.5px;margin-top:3px">The human behind the pixels.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">11:42 AM</span></div>
+            <div style="display:flex;flex-direction:column;gap:9px;max-width:780px">
+              <div style="display:flex;gap:11px;line-height:1.5"><span style="flex:none">🎨</span><span>Started as a graphic designer — typography and branding still shape how I design products.</span></div>
+              <div style="display:flex;gap:11px;line-height:1.5"><span style="flex:none">🧩</span><span>Building design systems is my favourite part of any project.</span></div>
+              <div style="display:flex;gap:11px;line-height:1.5"><span style="flex:none">⚛️</span><span>Learning React to bridge design and development.</span></div>
+              <div style="display:flex;gap:11px;line-height:1.5"><span style="flex:none">📷</span><span>Travel &amp; landscape photography enthusiast.</span></div>
+              <div style="display:flex;gap:11px;line-height:1.5"><span style="flex:none">🌱</span><span>I grow miniature bonsai trees.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">11:47 AM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">One from my camera roll:</p>
+            <div style="max-width:680px;width:100%;aspect-ratio:3/2;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)">
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="slot-photo" shape="rect" placeholder="Drop a favourite photo" hint-size="100%,300px" style="width:100%;height:100%;display:block"></x-import>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:2px;flex-wrap:wrap">
+              <button class="rx" data-rid="fn-cam" data-base="6" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>📸</span><span class="rx-c">6</span></button>
+              <button class="rx" data-rid="fn-leaf" data-base="4" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:12.5px;cursor:pointer"><span>🌱</span><span class="rx-c">4</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ─────── DM ─────── -->
+      <sc-if value="{{ showDm }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="DM — Lokesh Gurjar">
+        <div style="padding:4px 22px 16px">
+          <div style="font-size:22px;font-weight:700;letter-spacing:-0.01em">Lokesh Gurjar</div>
+          <div style="color:var(--muted);font-size:12.5px;margin-top:3px">This is the start of your conversation with Lokesh.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">12:01 PM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">Hey! Thanks for stopping by 👋</p>
+            <p style="margin:0;line-height:1.55;max-width:780px">I'm currently open to full-time Product Designer roles, freelance collaborations, and exciting startups. If you're building something interesting, I'd love to hear about it.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+              <a href="mailto:lokeshg91@gmail.com" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:10px;text-decoration:none" style-hover="text-decoration:none;filter:brightness(1.1)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7.5l9 6 9-6"></path></svg>
+                Email me
+              </a>
+              <a href="#" style="display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:10px;text-decoration:none" style-hover="text-decoration:none;border-color:var(--muted)">LinkedIn</a>
+              <a href="#" style="display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:10px;text-decoration:none" style-hover="text-decoration:none;border-color:var(--muted)">Resume</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">Lokesh Gurjar</span><span style="font-size:11px;color:var(--muted)">12:02 PM</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px">Or just type below — the composer actually works 👇</p>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- sent messages + typing -->
+      <sc-for list="{{ sentMsgs }}" as="m" hint-placeholder-count="0">
+        <div style="display:flex;gap:12px;padding:var(--msg-pad) 22px;animation:lg-in .3s ease both">
+          <sc-if value="{{ m.isBot }}" hint-placeholder-val="{{ false }}">
+            <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none;margin-top:2px">
+          </sc-if>
+          <sc-if value="{{ m.isUser }}" hint-placeholder-val="{{ false }}">
+            <div style="width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none;margin-top:2px">You</div>
+          </sc-if>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:650">{{ m.name }}</span><span style="font-size:11px;color:var(--muted)">{{ m.time }}</span></div>
+            <p style="margin:0;line-height:1.55;max-width:780px;white-space:pre-wrap">{{ m.text }}</p>
+            <sc-if value="{{ m.hasMail }}" hint-placeholder-val="{{ false }}">
+              <a href="{{ m.mailto }}" style="display:inline-flex;align-items:center;gap:8px;align-self:flex-start;background:var(--accent);color:#fff;font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:10px;text-decoration:none;margin-top:2px" style-hover="text-decoration:none;filter:brightness(1.1)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7.5l9 6 9-6"></path></svg>
+                Send as email →
+              </a>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+
+      <sc-if value="{{ typing }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:12px;padding:8px 22px;align-items:center">
+          <img src="assets/lokesh.jpg" alt="" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none">
+          <div style="display:flex;gap:5px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--muted);animation:lg-blink 1s infinite"></span>
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--muted);animation:lg-blink 1s infinite;animation-delay:.15s"></span>
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--muted);animation:lg-blink 1s infinite;animation-delay:.3s"></span>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- composer -->
+    <div style="flex:none;padding:8px 22px 18px">
+      <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:5px 5px 5px 14px">
+        <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="{{ composerPlaceholder }}" style="flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:inherit;font-size:var(--fs);padding:9px 0;min-width:0">
+        <button onClick="{{ onSend }}" title="Send" style="width:38px;height:38px;border-radius:9px;border:none;background:var(--accent);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none" style-hover="filter:brightness(1.1)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.4-7.5c.8-.35.8-1.45 0-1.8L3.4 3.6c-.65-.3-1.4.2-1.4.9v5.1c0 .5.35.9.85 1L13 12 2.85 13.4c-.5.1-.85.5-.85 1v5.1c0 .7.75 1.2 1.4.9z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Midnight&quot;, &quot;Daylight&quot;, &quot;Espresso&quot;], &quot;default&quot;: &quot;Daylight&quot;, &quot;section&quot;: &quot;Appearance&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;accent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;options&quot;: [&quot;#7C5CFF&quot;, &quot;#14A085&quot;, &quot;#5B8DEF&quot;, &quot;#E8963C&quot;], &quot;default&quot;: &quot;#7C5CFF&quot;, &quot;section&quot;: &quot;Appearance&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;font&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Schibsted Grotesk&quot;, &quot;Hanken Grotesk&quot;, &quot;Bricolage Grotesque&quot;], &quot;default&quot;: &quot;Schibsted Grotesk&quot;, &quot;section&quot;: &quot;Appearance&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;density&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Cozy&quot;, &quot;Compact&quot;], &quot;default&quot;: &quot;Cozy&quot;, &quot;section&quot;: &quot;Appearance&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      channel: 'intro',
+      unread: { work: 7, skills: 3, process: 2, fun: 4, dm: 1 },
+      sent: [],
+      typingCh: null,
+      draft: '',
+      sbOpen: typeof window === 'undefined' || window.innerWidth >= 760,
+      winW: typeof window === 'undefined' ? 1200 : window.innerWidth
+    };
+    this.feedRef = React.createRef();
+    this.rxMap = {};
+  }
+
+  componentDidMount() {
+    try { this.rxMap = JSON.parse(localStorage.getItem('lg-portfolio-rx') || '{}'); } catch (e) { this.rxMap = {}; }
+    this.onDocClick = (e) => {
+      const btn = e.target && e.target.closest ? e.target.closest('.rx') : null;
+      if (!btn) return;
+      const id = btn.dataset.rid;
+      this.rxMap[id] = !this.rxMap[id];
+      try { localStorage.setItem('lg-portfolio-rx', JSON.stringify(this.rxMap)); } catch (e2) {}
+      this.applyRx();
+    };
+    document.addEventListener('click', this.onDocClick);
+    this.onResize = () => this.setState({ winW: window.innerWidth });
+    window.addEventListener('resize', this.onResize);
+    this.applyTheme();
+    this.applyRx();
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.onDocClick);
+    window.removeEventListener('resize', this.onResize);
+    clearTimeout(this._replyTimer);
+  }
+
+  componentDidUpdate() {
+    this.applyTheme();
+    this.applyRx();
+  }
+
+  themeVars() {
+    const themes = {
+      Midnight: { bg: '#101418', sidebar: '#0C1014', panel: '#13181D', card: '#181F26', border: 'rgba(255,255,255,.08)', text: '#E9EDF1', muted: '#93A0AC', hover: 'rgba(255,255,255,.05)', mix: 'white',
+        sbText: '#E9EDF1', sbMuted: '#93A0AC', sbBorder: 'rgba(255,255,255,.08)', sbHover: 'rgba(255,255,255,.06)', sbActive: 'rgba(255,255,255,.1)', rail: '#080B0E' },
+      Daylight: { bg: '#FFFFFF', sidebar: '#171717', panel: '#FFFFFF', card: '#F7F6F2', border: 'rgba(24,28,32,.12)', text: '#16191D', muted: '#69737D', hover: 'rgba(24,28,32,.05)', mix: 'black',
+        sbText: '#F5F5F5', sbMuted: '#9E9E9E', sbBorder: 'rgba(255,255,255,.08)', sbHover: 'rgba(255,255,255,.06)', sbActive: '#2D2D2D', rail: '#0A0A0A' },
+      Espresso: { bg: '#171310', sidebar: '#120F0C', panel: '#1B1613', card: '#231C16', border: 'rgba(255,255,255,.09)', text: '#F0EAE3', muted: '#A79C90', hover: 'rgba(255,255,255,.05)', mix: 'white',
+        sbText: '#F0EAE3', sbMuted: '#A79C90', sbBorder: 'rgba(255,255,255,.09)', sbHover: 'rgba(255,255,255,.06)', sbActive: 'rgba(255,255,255,.1)', rail: '#0B0907' }
+    };
+    return themes[this.props.theme] || themes.Midnight;
+  }
+
+  applyTheme() {
+    const v = this.themeVars();
+    const accent = this.props.accent || '#7C5CFF';
+    const d = document.documentElement.style;
+    d.setProperty('--bg', v.bg);
+    d.setProperty('--sidebar', v.sidebar);
+    d.setProperty('--panel', v.panel);
+    d.setProperty('--card', v.card);
+    d.setProperty('--border', v.border);
+    d.setProperty('--text', v.text);
+    d.setProperty('--muted', v.muted);
+    d.setProperty('--hover', v.hover);
+    d.setProperty('--sb-text', v.sbText);
+    d.setProperty('--sb-muted', v.sbMuted);
+    d.setProperty('--sb-border', v.sbBorder);
+    d.setProperty('--sb-hover', v.sbHover);
+    d.setProperty('--rail', v.rail);
+    d.setProperty('--sb-active', v.sbActive);
+    d.setProperty('--font', '"' + (this.props.font || 'Schibsted Grotesk') + '"');
+    d.setProperty('--accent', accent);
+    d.setProperty('--accent-text', v.mix === 'white'
+      ? 'color-mix(in srgb, ' + accent + ' 55%, white)'
+      : 'color-mix(in srgb, ' + accent + ' 75%, black)');
+    d.setProperty('--accent-soft', 'color-mix(in srgb, ' + accent + ' 15%, transparent)');
+    const compact = (this.props.density || 'Cozy') === 'Compact';
+    d.setProperty('--fs', compact ? '13.5px' : '15px');
+    d.setProperty('--msg-pad', compact ? '6px' : '10px');
+  }
+
+  applyRx() {
+    const btns = document.querySelectorAll('.rx');
+    for (let i = 0; i < btns.length; i++) {
+      const b = btns[i];
+      const on = !!this.rxMap[b.dataset.rid];
+      const base = parseInt(b.dataset.base, 10) || 0;
+      const c = b.querySelector('.rx-c');
+      if (c) c.textContent = String(base + (on ? 1 : 0));
+      b.style.borderColor = on ? 'var(--accent)' : 'var(--border)';
+      b.style.background = on ? 'var(--accent-soft)' : 'var(--card)';
+    }
+  }
+
+  railStyle(active) {
+    return {
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+      width: 56, padding: '8px 0', borderRadius: 12, cursor: 'pointer', userSelect: 'none',
+      color: active ? 'var(--sb-text)' : 'var(--sb-muted)',
+      background: active ? 'var(--sb-hover)' : 'transparent'
+    };
+  }
+
+  setChannel(key) {
+    const mobile = this.state.winW < 760;
+    this.setState(s => ({
+      channel: key,
+      unread: Object.assign({}, s.unread, { [key]: 0 }),
+      sbOpen: mobile ? false : s.sbOpen
+    }), () => {
+      if (this.feedRef.current) this.feedRef.current.scrollTop = 0;
+    });
+  }
+
+  scrollBottom() {
+    const f = this.feedRef.current;
+    if (f) f.scrollTop = f.scrollHeight;
+  }
+
+  now() {
+    return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  send() {
+    const text = this.state.draft.trim();
+    if (!text) return;
+    const ch = this.state.channel;
+    this.setState(s => ({
+      draft: '',
+      sent: s.sent.concat([{ channel: ch, name: 'You', text: text, time: this.now(), isUser: true }]),
+      typingCh: ch
+    }), () => this.scrollBottom());
+    clearTimeout(this._replyTimer);
+    this._replyTimer = setTimeout(() => {
+      this.setState(s => ({
+        typingCh: null,
+        sent: s.sent.concat([{
+          channel: ch, name: 'Lokesh Gurjar', isBot: true, time: this.now(),
+          text: 'Thanks for the note! So it actually reaches me, tap below \u2014 it opens in your email app with your message ready to go \ud83d\udc47',
+          hasMail: true,
+          mailto: 'mailto:lokeshg91@gmail.com?subject=' + encodeURIComponent('Hello Lokesh \u2014 via your portfolio') + '&body=' + encodeURIComponent(text)
+        }])
+      }), () => this.scrollBottom());
+    }, 1500);
+  }
+
+  renderVals() {
+    const c = this.state.channel;
+    const defs = [
+      { k: 'intro', label: 'introductions' },
+      { k: 'work', label: 'work' },
+      { k: 'skills', label: 'skills-and-tools' },
+      { k: 'process', label: 'design-process' },
+      { k: 'fun', label: 'fun-facts' }
+    ];
+    const baseStyle = {
+      display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px',
+      borderRadius: 8, cursor: 'pointer', color: 'var(--sb-muted)',
+      fontSize: 14, userSelect: 'none'
+    };
+    const activeStyle = Object.assign({}, baseStyle, {
+      background: 'var(--sb-active)', color: 'var(--sb-text)', fontWeight: 600
+    });
+    const channels = defs.map(d => ({
+      label: d.label,
+      badge: this.state.unread[d.k] || 0,
+      go: () => this.setChannel(d.k),
+      style: c === d.k ? activeStyle : baseStyle
+    }));
+    const topics = {
+      intro: 'Who I am & what I do',
+      work: 'Products designed end-to-end',
+      skills: 'My toolkit',
+      process: 'From brief to shipped',
+      fun: 'The human behind the pixels',
+      dm: 'Online \u00b7 usually replies fast'
+    };
+    const labels = {
+      intro: 'introductions', work: 'work', skills: 'skills-and-tools',
+      process: 'design-process', fun: 'fun-facts'
+    };
+    return {
+      channels: channels,
+      feedRef: this.feedRef,
+      toggleSb: () => this.setState(s => ({ sbOpen: !s.sbOpen })),
+      isMobile: this.state.winW < 760,
+      notMobile: this.state.winW >= 760,
+      showBackdrop: this.state.winW < 760 && this.state.sbOpen,
+      sidebarStyle: Object.assign({
+        width: this.state.sbOpen ? 276 : 0,
+        minWidth: 0,
+        flex: 'none', display: 'flex', flexDirection: 'column',
+        background: 'var(--sidebar)', color: 'var(--sb-text)',
+        overflow: 'hidden', whiteSpace: 'nowrap',
+        transition: 'width .25s ease'
+      }, this.state.winW < 760 ? {
+        position: 'fixed', left: 72, top: 0, bottom: 0, zIndex: 50,
+        boxShadow: this.state.sbOpen ? '0 0 40px rgba(0,0,0,.4)' : 'none'
+      } : {}),
+      dmStyle: c === 'dm' ? activeStyle : baseStyle,
+      dmBadge: this.state.unread.dm || 0,
+      goDm: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setChannel('dm'); },
+      goWork: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setChannel('work'); },
+      goHome: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setChannel('intro'); },
+      railHomeStyle: this.railStyle(c === 'intro'),
+      railDmStyle: this.railStyle(c === 'dm'),
+      railWorkStyle: this.railStyle(c === 'work'),
+      headerPrefix: c === 'dm' ? '@' : '#',
+      headerTitle: c === 'dm' ? 'Lokesh Gurjar' : labels[c],
+      headerTopic: topics[c],
+      showIntro: c === 'intro',
+      showWork: c === 'work',
+      showSkills: c === 'skills',
+      showProcess: c === 'process',
+      showFun: c === 'fun',
+      showDm: c === 'dm',
+      sentMsgs: this.state.sent.filter(m => m.channel === c),
+      typing: this.state.typingCh === c,
+      draft: this.state.draft,
+      onDraft: (e) => this.setState({ draft: e.target.value }),
+      onKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); } },
+      onSend: () => this.send(),
+      composerPlaceholder: c === 'dm'
+        ? 'Message Lokesh \u2014 press Enter to send'
+        : 'Message #' + labels[c] + ' \u2014 yes, it actually works'
+    };
+  }
+}
+</script>
+</body>
+</html>
